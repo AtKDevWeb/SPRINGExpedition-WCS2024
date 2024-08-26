@@ -51,9 +51,39 @@ public class ArticleController {
         return ResponseEntity.ok(article);
     }
 
+    //ReadByTiltle
+    @GetMapping("/search-title")
+    public ResponseEntity<List<Article>> getArticleByTitle(@RequestParam String title) {
+        List<Article> articles = articleRepository.findByTitle(title);
+        if (articles.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(articles);
+    }
+
+    //ReadByContentContainingString
+    @GetMapping("/search-term")
+    public ResponseEntity<List<Article>> getArticleByTerm(@RequestParam String term) {
+        List<Article> articles = articleRepository.findByContentContainingIgnoreCase(term);
+        if (articles.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(articles);
+    }
+
+    //ReadByCreatedAtAfterDate
     @GetMapping("/search-date")
-    public ResponseEntity<List<Article>> getArticleBySearchDate(@RequestParam LocalDateTime searchDate) {
-        List<Article> articles = articleRepository.findByCreatedAtDateAfter(searchDate);
+    public ResponseEntity<List<Article>> getArticleByCreatedAtAfter(@RequestParam LocalDateTime date) {
+        List<Article> articles = articleRepository.findByCreatedAtAfter(date);
+        if (articles.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(articles);
+    }
+    //Read5TopArticleCreated
+    @GetMapping("/top-5")
+    public ResponseEntity<List<Article>> getArticleByTop5() {
+        List <Article> articles = articleRepository.findByTop5CreatedAtOrderByDesc();
         if (articles.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
