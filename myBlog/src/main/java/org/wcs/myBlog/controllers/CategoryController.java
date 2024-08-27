@@ -46,12 +46,12 @@ public class CategoryController {
 
     //Update
     @PostMapping("/{id}")
-    public ResponseEntity<Category> updateCategory(@PathVariable long id, @RequestBody Category category) {
+    public ResponseEntity<Category> updateCategory(@PathVariable long id, @RequestBody Category categoryDetails) {
         Category category = categoryRepository.findById(id).orElse(null);
         if (category == null) {
             return ResponseEntity.notFound().build();
         }
-        category.setName(category.getName());
+        category.setName(categoryDetails.getName());
         Category savedCategory = CategoryRepository.save(category);
         return ResponseEntity.ok(savedCategory);
     }
