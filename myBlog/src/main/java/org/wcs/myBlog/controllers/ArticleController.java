@@ -83,7 +83,7 @@ public class ArticleController {
     //Read5TopArticleCreated
     @GetMapping("/top-5")
     public ResponseEntity<List<Article>> getArticleByTop5() {
-        List <Article> articles = articleRepository.findByTop5CreatedAtOrderByDesc();
+        List <Article> articles = articleRepository.findTop5ByOrderByCreatedAtDesc();
         if (articles.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
@@ -104,6 +104,7 @@ public class ArticleController {
         Article updatedArticle = articleRepository.save(article);
         return ResponseEntity.ok(updatedArticle);
     }
+
     //Delete
     @DeleteMapping("/{id}")
     public ResponseEntity<Article> deleteArticle(@PathVariable long id) {
