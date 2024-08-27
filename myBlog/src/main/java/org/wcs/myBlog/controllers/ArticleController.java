@@ -4,7 +4,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.wcs.myBlog.controllers.repository.ArticleRepository;
+import org.wcs.myBlog.controllers.repository.CategoryRepository;
 import org.wcs.myBlog.models.Article;
+import org.wcs.myBlog.models.Category;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,8 +17,12 @@ public class ArticleController {
 
     //Declaration du constructeur et injection du repository
     private final ArticleRepository articleRepository;
-    public ArticleController(ArticleRepository articleRepository) {
+    private final CategoryRepository categoryRepository;
+
+    public ArticleController(ArticleRepository articleRepository,
+                             CategoryRepository categoryRepository) {
         this.articleRepository = articleRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     //CRUD
@@ -26,10 +32,23 @@ public class ArticleController {
         //initialisation des variables de temps
         article.setCreatedAt(LocalDateTime.now());
         article.setUpdatedAt(LocalDateTime.now());
+
+        //Add Category On Creation
+        if(article.getCategory() !=null) {
+            Category category = categoryRepository.findById(article.getCategory().getId()).orElse(null);
+            if(category == null) {
+                return ResponseEntity.badRequest().body(null);
+            }
+            article.setCategory(category);
+        }
+
         //Sauvegarde des Data dans l'objet SavedArticle pour la création de l'enregistrement dans la BDD
         Article savedArticle = articleRepository.save(article);
+
         //Retour de la confirmation de la création du tuple dans la BDD
         return ResponseEntity.status(HttpStatus.CREATED).body(savedArticle);
+
+
     }
 
     //ReadAll

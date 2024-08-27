@@ -22,6 +22,10 @@ public class Article {
     @Column (nullable = false)
     private LocalDateTime updatedAt;
 
+    @ManyToOne
+    @JoinColumn (name ="category_id")
+    private Category category;
+
     //Contructor : optionnal while , the reflexion create this
 
     //Getters
@@ -46,6 +50,10 @@ public class Article {
         return updatedAt;
     }
 
+    public Category getCategory() {
+        return category;
+    }
+
     //Setters
     public void setId(Long id) {
         this.id = id;
@@ -65,5 +73,9 @@ public class Article {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 }
