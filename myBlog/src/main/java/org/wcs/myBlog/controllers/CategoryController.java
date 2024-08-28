@@ -46,27 +46,31 @@ public class CategoryController {
     //CRUD
     //Create
     @PostMapping
-    public ResponseEntity<Category> addCategory(@RequestBody Category category) {
+    public ResponseEntity<CategoryDTO> addCategory(@RequestBody Category category) {
             Category savedCategory = categoryRepository.save(category);
-            return ResponseEntity.status(HttpStatus.CREATED).body(savedCategory);
+            return ResponseEntity.status(HttpStatus.CREATED).body(convertCategoryToDTO(savedCategory));
     }
     //ReadAll
     @GetMapping
-    public ResponseEntity<List<Category>> getAllCategories() {
+    public ResponseEntity<List<CategoryDTO>> getAllCategories() {
         List<Category> categories = categoryRepository.findAll();
         if (categories.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.ok(categories);
+        List<CategoryDTO> categoriesDTOs = categories.stream()
+                .map(this::convertCategoryToDTO)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(categoriesDTOs);
     }
     //ReadById
     @GetMapping("/{id}")
-    public ResponseEntity<Category> getCategoryById(@PathVariable long id) {
+    public ResponseEntity<CategoryDTO> getCategoryById(@PathVariable long id) {
         Category category = categoryRepository.findById(id).orElse(null);
         if (category == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(category);
+        return ResponseEntity.ok(convertCategoryToDTO(category));
     }
 
     //Update
