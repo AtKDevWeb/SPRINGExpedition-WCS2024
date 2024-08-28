@@ -11,6 +11,7 @@ import org.wcs.myBlog.models.Category;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/articles")
@@ -43,7 +44,7 @@ public class ArticleController {
     //CRUD
     //Create
     @PostMapping
-    public ResponseEntity<Article> createArticle(@RequestBody Article article) {
+    public ResponseEntity<ArticleDTO> createArticle(@RequestBody Article article) {
         //initialisation des variables de temps
         article.setCreatedAt(LocalDateTime.now());
         article.setUpdatedAt(LocalDateTime.now());
@@ -61,19 +62,21 @@ public class ArticleController {
         Article savedArticle = articleRepository.save(article);
 
         //Retour de la confirmation de la création du tuple dans la BDD
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedArticle);
+        return ResponseEntity.status(HttpStatus.CREATED).body(convertToDTO(savedArticle));
 
 
     }
 
     //ReadAll
     @GetMapping
-    public ResponseEntity<List<Article>> getAllArticle() {
+    public ResponseEntity<List<ArticleDTO>> getAllArticle() {
         List<Article> articles = articleRepository.findAll();
         if (articles.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.ok(articles);
+        List<ArticleDTO> articlesDTOs = articles.stream().map(this::convertToDTO).collect(Collectors.toList());
+
+        return ResponseEntity.ok(articlesDTOs);
     }
 
     //ReadOne
@@ -88,46 +91,63 @@ public class ArticleController {
 
     //ReadByTiltle
     @GetMapping("/search-title")
-    public ResponseEntity<List<Article>> getArticleByTitle(@RequestParam String title) {
+    public ResponseEntity<List<ArticleDTO>> getArticleByTitle(@RequestParam String title) {
         List<Article> articles = articleRepository.findByTitle(title);
         if (articles.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.ok(articles);
+        List<ArticleDTO> articlesDTOs = articles.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(articlesDTOs);
+
     }
 
     //ReadByContentContainingString
     @GetMapping("/search-term")
-    public ResponseEntity<List<Article>> getArticleByTerm(@RequestParam String term) {
+    public ResponseEntity<List<ArticleDTO>> getArticleByTerm(@RequestParam String term) {
         List<Article> articles = articleRepository.findByContentContainingIgnoreCase(term);
         if (articles.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.ok(articles);
+        List<ArticleDTO> articlesDTOs = articles.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(articlesDTOs);
     }
 
     //ReadByCreatedAtAfterDate
     @GetMapping("/search-date")
-    public ResponseEntity<List<Article>> getArticleByCreatedAtAfter(@RequestParam LocalDateTime date) {
+    public ResponseEntity<List<ArticleDTO>> getArticleByCreatedAtAfter(@RequestParam LocalDateTime date) {
         List<Article> articles = articleRepository.findByCreatedAtAfter(date);
         if (articles.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.ok(articles);
+        List<ArticleDTO> articlesDTOs = articles.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(articlesDTOs);
     }
     //Read5TopArticleCreated
     @GetMapping("/top-5")
-    public ResponseEntity<List<Article>> getArticleByTop5() {
+    public ResponseEntity<List<ArticleDTO>> getArticleByTop5() {
         List <Article> articles = articleRepository.findTop5ByOrderByCreatedAtDesc();
         if (articles.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.ok(articles);
+        List<ArticleDTO> articlesDTOs = articles.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(articlesDTOs);
     }
 
     //UpdateOne
     @PutMapping("/{id}")
-    public ResponseEntity<Article> updateArticle(@PathVariable long id, @RequestBody Article articleDetails) {
+    public ResponseEntity<ArticleDTO> updateArticle(@PathVariable long id, @RequestBody Article articleDetails) {
         Article article = articleRepository.findById(id).orElse(null);
         if (article == null) {
             return ResponseEntity.notFound().build();
@@ -138,13 +158,16 @@ public class ArticleController {
 
         //add Category on Update
         Category category = categoryRepository.findById(articleDetails.getCategory().getId()).orElse(null);
-        article.setCategory(category);
+        if (articleDetails.getCategory() == null) {
+            return ResponseEntity.notFound().build();
+        }
+            article.setCategory(category);
 
-        Article updatedArticle = articleRepository.save(article);
-        return ResponseEntity.ok(updatedArticle);
-    }
+            Article updatedArticle = articleRepository.save(article);
+            return ResponseEntity.ok(convertToDTO(updatedArticle));
+        }
 
-    //Delete
+        //Delete
     @DeleteMapping("/{id}")
     public ResponseEntity<Article> deleteArticle(@PathVariable long id) {
         Article article = articleRepository.findById(id).orElse(null);
