@@ -78,12 +78,12 @@ public class ArticleController {
 
     //ReadOne
     @GetMapping("/{id}")
-    public ResponseEntity<Article> getArticleById(@PathVariable long id) {
+    public ResponseEntity<ArticleDTO> getArticleById(@PathVariable long id) {
         Article article = articleRepository.findById(id).orElse(null);
         if (article == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(article);
+        return ResponseEntity.ok(convertToDTO(article));
     }
 
     //ReadByTiltle
