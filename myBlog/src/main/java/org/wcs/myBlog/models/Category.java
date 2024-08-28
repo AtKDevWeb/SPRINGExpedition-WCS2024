@@ -26,6 +26,10 @@ public class Category {
         return name;
     }
 
+    public List<Article> getArticles() {
+        return articles;
+    }
+
     //Setter
     public void setId(long id) {
         this.id = id;
@@ -33,5 +37,9 @@ public class Category {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setArticles(List<Article> articles) {
+        this.articles = articles;
     }
 }

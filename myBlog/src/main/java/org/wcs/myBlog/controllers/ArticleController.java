@@ -120,6 +120,22 @@ public class ArticleController {
         article.setContent(articleDetails.getContent());
         article.setUpdatedAt(LocalDateTime.now());
 
+        //add Category on Update
+        if(article.getCategory() != null) {
+            Category category = categoryRepository.findById(articleDetails.getCategory().getId()).orElse(null);
+            if(category == null) {
+                return ResponseEntity.badRequest().body(null);
+            }
+            article.setCategory(category);
+        }
+
+        //Verification and update to Article Category
+//        if (article.getCategory() !=null) {
+//            Category newCategory=  new Category();
+//            newCategory.setId(article.getCategory().getId());
+//            newCategory.setName(article.getCategory().getName());
+//            article.setCategory(newCategory);
+//        }
         Article updatedArticle = articleRepository.save(article);
         return ResponseEntity.ok(updatedArticle);
     }
