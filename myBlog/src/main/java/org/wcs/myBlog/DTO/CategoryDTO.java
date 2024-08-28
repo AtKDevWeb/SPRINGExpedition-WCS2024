@@ -5,26 +5,29 @@ import java.util.List;
 public class CategoryDTO {
     private long id;
     private String name;
-    private List<String> articlesNames;
+    private List<ArticleDTO> articles;
 
-    public List<String> getArticlesNames() {
-        return articlesNames;
-    }
+    //getter
 
-    public void setArticlesNames(List<String> articlesNames) {
-        this.articlesNames = articlesNames;
+    public List<ArticleDTO> getArticles() {
+        return articles;
     }
 
     public long getId() {
         return id;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
+    }
+
+    //Setter
+    public void setArticles(List<ArticleDTO> articles) {
+        this.articles = articles;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public void setName(String name) {
