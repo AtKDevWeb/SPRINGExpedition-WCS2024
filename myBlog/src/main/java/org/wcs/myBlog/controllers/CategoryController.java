@@ -11,24 +11,24 @@ import java.util.List;
 @RestController
 @RequestMapping("/categories")
 public class CategoryController {
-    private final CategoryRepository CategoryRepository;
+
     //injection
-    private CategoryRepository categoryRepository;
+    private final CategoryRepository categoryRepository;
     public CategoryController(CategoryRepository categoryRepository) {
-        this.CategoryRepository = categoryRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     //CRUD
     //Create
     @PostMapping
     public ResponseEntity<Category> addCategory(@RequestBody Category category) {
-            Category savedCategory = CategoryRepository.save(category);
+            Category savedCategory = categoryRepository.save(category);
             return ResponseEntity.status(HttpStatus.CREATED).body(savedCategory);
     }
     //ReadAll
     @GetMapping
     public ResponseEntity<List<Category>> getAllCategories() {
-        List<Category> categories = CategoryRepository.findAll();
+        List<Category> categories = categoryRepository.findAll();
         if (categories.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
@@ -45,14 +45,14 @@ public class CategoryController {
     }
 
     //Update
-    @PostMapping("/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Category> updateCategory(@PathVariable long id, @RequestBody Category categoryDetails) {
         Category category = categoryRepository.findById(id).orElse(null);
         if (category == null) {
             return ResponseEntity.notFound().build();
         }
         category.setName(categoryDetails.getName());
-        Category savedCategory = CategoryRepository.save(category);
+        Category savedCategory = categoryRepository.save(category);
         return ResponseEntity.ok(savedCategory);
     }
 
@@ -67,8 +67,5 @@ public class CategoryController {
         categoryRepository.delete(category);
         return ResponseEntity.noContent().build();
     }
-
-
-
-
+    
 }

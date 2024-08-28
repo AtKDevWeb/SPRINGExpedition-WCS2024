@@ -2,6 +2,8 @@ package org.wcs.myBlog.models;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 public class Category {
     @Id
@@ -9,6 +11,9 @@ public class Category {
     private long id;
     @Column(nullable = false, length = 50)
     private String name;
+
+    @OneToMany(mappedBy = "category")
+    private List<Article> articles;
 
     //Constructeur
 
