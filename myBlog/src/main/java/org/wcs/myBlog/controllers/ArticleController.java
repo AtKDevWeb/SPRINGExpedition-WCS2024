@@ -121,13 +121,8 @@ public class ArticleController {
         article.setUpdatedAt(LocalDateTime.now());
 
         //add Category on Update
-        if(article.getCategory() != null) {
-            Category category = categoryRepository.findById(articleDetails.getCategory().getId()).orElse(null);
-            if(category == null) {
-                return ResponseEntity.badRequest().body(null);
-            }
-            article.setCategory(category);
-        }
+        Category category = categoryRepository.findById(articleDetails.getCategory().getId()).orElse(null);
+        article.setCategory(category);
 
         //Verification and update to Article Category
 //        if (article.getCategory() !=null) {
