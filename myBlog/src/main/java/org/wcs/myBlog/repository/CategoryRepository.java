@@ -1,4 +1,4 @@
-package org.wcs.myBlog.controllers.repository;
+package org.wcs.myBlog.repository;
 
 import org.wcs.myBlog.models.Category;
 import org.springframework.data.jpa.repository.JpaRepository;

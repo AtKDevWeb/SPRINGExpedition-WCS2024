@@ -3,7 +3,7 @@ package org.wcs.myBlog.controllers;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.wcs.myBlog.controllers.repository.CategoryRepository;
+import org.wcs.myBlog.repository.CategoryRepository;
 import org.wcs.myBlog.models.Category;
 
 import java.util.List;

@@ -3,8 +3,9 @@ package org.wcs.myBlog.controllers;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.wcs.myBlog.controllers.repository.ArticleRepository;
-import org.wcs.myBlog.controllers.repository.CategoryRepository;
+import org.wcs.myBlog.DTO.ArticleDTO;
+import org.wcs.myBlog.repository.ArticleRepository;
+import org.wcs.myBlog.repository.CategoryRepository;
 import org.wcs.myBlog.models.Article;
 import org.wcs.myBlog.models.Category;
 
@@ -23,6 +24,20 @@ public class ArticleController {
                              CategoryRepository categoryRepository) {
         this.articleRepository = articleRepository;
         this.categoryRepository = categoryRepository;
+    }
+
+    //Mapper
+    private ArticleDTO convertToDTO(Article article) {
+        ArticleDTO articleDTO = new ArticleDTO();
+
+        articleDTO.setId(article.getId());
+        articleDTO.setTitle(article.getTitle());
+        articleDTO.setContent(article.getContent());
+        articleDTO.setUpdateAt(article.getUpdatedAt());
+        if (article.getCategory() != null) {
+            articleDTO.setCategoryName((article.getCategory().getName()));
+        }
+        return articleDTO;
     }
 
     //CRUD
@@ -60,6 +75,7 @@ public class ArticleController {
         }
         return ResponseEntity.ok(articles);
     }
+
     //ReadOne
     @GetMapping("/{id}")
     public ResponseEntity<Article> getArticleById(@PathVariable long id) {
@@ -124,13 +140,6 @@ public class ArticleController {
         Category category = categoryRepository.findById(articleDetails.getCategory().getId()).orElse(null);
         article.setCategory(category);
 
-        //Verification and update to Article Category
-//        if (article.getCategory() !=null) {
-//            Category newCategory=  new Category();
-//            newCategory.setId(article.getCategory().getId());
-//            newCategory.setName(article.getCategory().getName());
-//            article.setCategory(newCategory);
-//        }
         Article updatedArticle = articleRepository.save(article);
         return ResponseEntity.ok(updatedArticle);
     }
