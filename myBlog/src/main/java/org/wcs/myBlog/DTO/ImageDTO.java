@@ -24,7 +24,6 @@ public class ImageDTO {
         return articlesDTOs;
     }
 
-
     //Setter
     public void setId(long id) {
         this.id = id;
