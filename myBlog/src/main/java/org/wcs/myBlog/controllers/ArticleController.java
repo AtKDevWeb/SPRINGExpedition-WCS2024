@@ -49,6 +49,10 @@ public class ArticleController {
         if (article.getImages() != null) {
             articleDTO.setImagePaths((article.getImages().stream().map(Image::getPath).collect(Collectors.toList())));
         }
+        if(article.getArticleAuthors()!=null) {
+            articleDTO
+
+        }
         return articleDTO;
     }
 

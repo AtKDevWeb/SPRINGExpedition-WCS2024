@@ -72,16 +72,16 @@ public class ArticleAuthorController {
     }
     //UnpdateById
     @PutMapping("/{id}")
-    public ResponseEntity<ArticleAuthor> updateArticleAuthor(@PathVariable long id, @RequestBody ArticleAuthor articleAuthor) {
-       ArticleAuthor updatedArticleAthor = articleRepository.findById(id).orElse(null);
-        if (updatedArticleAthor == null) {
+    public ResponseEntity<ArticleAuthorDTO> updateArticleAuthor(@PathVariable long id, @RequestBody ArticleAuthor articleAuthor) {
+       ArticleAuthor updatedArticleAuthor = articleAuthorRepository.findById(id).orElse(null);
+        if (updatedArticleAuthor == null) {
             return ResponseEntity.noContent().build();
         }
-        updatedArticleAthor.setContribution(articleAuthor.getContribution());
+        updatedArticleAuthor.setContribution(articleAuthor.getContribution());
 
-        articleAuthorRepository.save(updatedArticleAthor);
+        articleAuthorRepository.save(updatedArticleAuthor);
 
-        return ResponseEntity.ok(convertToArticleAuthorDTO(updatedArticleAthor));
+        return ResponseEntity.ok(convertToArticleAuthorDTO(updatedArticleAuthor));
     }
     //DeleteById
     @DeleteMapping("/{id}")
