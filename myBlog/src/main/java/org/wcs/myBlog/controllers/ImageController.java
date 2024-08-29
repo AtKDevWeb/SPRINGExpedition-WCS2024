@@ -67,7 +67,7 @@ public class ImageController {
         return ResponseEntity.ok(convertToDTO(image));
     }
     //Update
-    @PostMapping("/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<ImageDTO> getImageById(@PathVariable Long id,@RequestBody Image imageDetails){
         Image updatedImage = imageRepository.findById(id).orElse(null);
         if (updatedImage == null) {

@@ -5,12 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.wcs.myBlog.DTO.ArticleDTO;
 import org.wcs.myBlog.DTO.ImageDTO;
-import org.wcs.myBlog.models.Image;
-import org.wcs.myBlog.repository.ArticleRepository;
-import org.wcs.myBlog.repository.CategoryRepository;
-import org.wcs.myBlog.models.Article;
-import org.wcs.myBlog.models.Category;
-import org.wcs.myBlog.repository.ImageRepository;
+import org.wcs.myBlog.models.*;
+import org.wcs.myBlog.repository.*;
 
 import java.sql.Array;
 import java.time.LocalDateTime;
@@ -26,12 +22,16 @@ public class ArticleController {
     private final ArticleRepository articleRepository;
     private final CategoryRepository categoryRepository;
     private final ImageRepository imageRepository;
+    private final AuthorRepository authorRepository;
+    private final ArticleAuthorRepository articleAuthorRepository;
 
     public ArticleController(ArticleRepository articleRepository,
-                             CategoryRepository categoryRepository, ImageRepository imageRepository) {
+                             CategoryRepository categoryRepository, ImageRepository imageRepository, AuthorRepository authorRepository, ArticleAuthorRepository articleAuthorRepository) {
         this.articleRepository = articleRepository;
         this.categoryRepository = categoryRepository;
         this.imageRepository = imageRepository;
+        this.authorRepository = authorRepository;
+        this.articleAuthorRepository = articleAuthorRepository;
     }
 
     //Mapper
@@ -88,9 +88,27 @@ public class ArticleController {
             article.setImages(validImages);
         }
 
+
         //Sauvegarde des Data dans l'objet SavedArticle pour la création de l'enregistrement dans la BDD
         Article savedArticle = articleRepository.save(article);
 
+        //On sauvegarde d'abord l'objet avec de creer la relation definitive sinon on ne peut pas affecter l'article
+        // à sa relation car il n'existe pas
+        if(article.getArticleAuthors() !=null){
+            for (ArticleAuthor  articleAuthor : article.getArticleAuthors()) {
+                Author author = articleAuthor.getAuthor();
+                author = authorRepository.findById(author.getId()).orElse(null);
+                if(author == null) {
+                    return ResponseEntity.badRequest().body(null);
+                }
+
+                articleAuthor.setAuthor(author);
+                articleAuthor.setArticle(savedArticle);
+                articleAuthor.setContribution(articleAuthor.getContribution());
+
+                articleAuthorRepository.save(articleAuthor);
+            }
+        }
         //Retour de la confirmation de la création du tuple dans la BDD
         return ResponseEntity.status(HttpStatus.CREATED).body(convertToDTO(savedArticle));
 
@@ -216,6 +234,32 @@ public class ArticleController {
             //Si aucunes image est fournie, on nettoie la liste des images associés.
             article.getImages().clear();
         }
+
+        if(articleDetails.getArticleAuthors() !=null){
+            //Suppression des anciennes rlation entre l'ancien auteurs et ses contributions
+            for (ArticleAuthor  oldArticleAuthor : article.getArticleAuthors()) {
+                articleAuthorRepository.delete(oldArticleAuthor);
+            }
+            List<ArticleAuthor> updateArticleAuthors = new ArrayList<>();
+
+            for (ArticleAuthor  articleAuthorDetails : articleDetails.getArticleAuthors()) {
+                Author author = articleAuthorDetails.getAuthor();
+                author = authorRepository.findById(author.getId()).orElse(null);
+                if(author == null) {
+                    return ResponseEntity.badRequest().body(null);
+                }
+                //Creer et associer la nouvelle relation
+                ArticleAuthor newArticleAuthor = new ArticleAuthor();
+                newArticleAuthor.setAuthor(author);
+                newArticleAuthor.setArticle(article);
+                newArticleAuthor.setContribution(articleAuthorDetails.getContribution());
+
+                updateArticleAuthors.add(newArticleAuthor);
+
+                articleAuthorRepository.save(updateArticleAuthors);
+            }
+        }
+
             Article updatedArticle = articleRepository.save(article);
             return ResponseEntity.ok(convertToDTO(updatedArticle));
         }
@@ -228,6 +272,12 @@ public class ArticleController {
         Article article = articleRepository.findById(id).orElse(null);
         if(article ==null){
             return ResponseEntity.notFound().build();
+        }
+        //Suppresion de toutes les relation lié à l'article
+        if (article.getArticleAuthors() != null){
+            for (ArticleAuthor  articleAuthor : article.getArticleAuthors()) {
+                articleAuthorRepository.delete(articleAuthor);
+            }
         }
         articleRepository.delete(article);
         return ResponseEntity.noContent().build();

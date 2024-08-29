@@ -31,6 +31,10 @@ public class Author {
         return lastName;
     }
 
+    public List<ArticleAuthor> getArticleAuthors() {
+        return articleAuthors;
+    }
+
     //Setter
     public void setFirstName(String firstName) {
         this.firstName = firstName;
@@ -42,5 +46,9 @@ public class Author {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public void setArticleAuthors(List<ArticleAuthor> articleAuthors) {
+        this.articleAuthors = articleAuthors;
     }
 }

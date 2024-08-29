@@ -65,7 +65,7 @@ public class AuthorController {
 
     }
     // UpdateOneById
-    @PostMapping("/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<AuthorDTO> updateAuthor(@PathVariable Long id, @RequestBody Author author) {
         Author updatedAuthor = authorRepository.findById(id).orElse(null);
         if (updatedAuthor == null) {

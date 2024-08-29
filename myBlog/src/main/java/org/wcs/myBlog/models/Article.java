@@ -37,7 +37,8 @@ public class Article {
     )
     private List<Image> images;
 
-
+    @OneToMany(mappedBy="article")
+    private List<ArticleAuthor> articleAuthors;
 
     //Contructor : optionnal while , the reflexion create this
 
@@ -71,6 +72,11 @@ public class Article {
         return images;
     }
 
+    public List<ArticleAuthor> getArticleAuthors() {
+
+        return articleAuthors;
+    }
+
     //Setters
     public void setId(Long id) {
         this.id = id;
@@ -99,4 +105,9 @@ public class Article {
     public void setImages(List<Image> images) {
         this.images = images;
     }
+
+    public void setArticleAuthors(List<ArticleAuthor> articleAuthors) {
+        this.articleAuthors = articleAuthors;
+    }
+
 }
