@@ -75,14 +75,14 @@ public class CategoryController {
 
     //Update
     @PutMapping("/{id}")
-    public ResponseEntity<Category> updateCategory(@PathVariable long id, @RequestBody Category categoryDetails) {
+    public ResponseEntity<CategoryDTO> updateCategory(@PathVariable long id, @RequestBody Category categoryDetails) {
         Category category = categoryRepository.findById(id).orElse(null);
         if (category == null) {
             return ResponseEntity.notFound().build();
         }
         category.setName(categoryDetails.getName());
         Category savedCategory = categoryRepository.save(category);
-        return ResponseEntity.ok(savedCategory);
+        return ResponseEntity.ok(convertCategoryToDTO(savedCategory));
     }
 
 
