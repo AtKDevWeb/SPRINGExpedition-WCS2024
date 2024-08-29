@@ -1,5 +1,6 @@
 package org.wcs.myBlog.controllers;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.wcs.myBlog.DTO.ImageDTO;
@@ -8,15 +9,16 @@ import org.wcs.myBlog.models.Article;
 import org.wcs.myBlog.repository.ArticleRepository;
 import org.wcs.myBlog.repository.ImageRepository;
 
-
+import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/images")
 public class ImageController {
 
-    pirvate final ImageRepository imageRepository;
+
     private final ArticleRepository articleRepository;
+    private final ImageRepository imageRepository;
 
     public ImageController(ImageRepository imageRepository, ArticleRepository articleRepository) {
         this.imageRepository = imageRepository;
@@ -29,7 +31,7 @@ public class ImageController {
         imageDTO.setId(image.getId());
         imageDTO.setPath(image.getPath());
         if (image.getArticles() != null ) {
-            imageDTO.setId(image.getArticles().stream().map(Article::getId).collect(Collectors.toList()));
+            imageDTO.setArticlesIds(image.getArticles().stream().map(Article::getId).collect(Collectors.toList()));
         }
         return imageDTO;
     }
@@ -39,7 +41,7 @@ public class ImageController {
     @PostMapping
     public ResponseEntity<ImageDTO> createImage(@RequestBody Image image) {
         Image savedImage = imageRepository.save(image);
-        return ResponseEntity.status(201).body(convertToDTO(savedImage));
+        return ResponseEntity.status(HttpStatus.CREATED).body(convertToDTO(savedImage));
     }
 
     //ReadAll
@@ -66,13 +68,16 @@ public class ImageController {
     }
     //Update
     @PostMapping("/{id}")
-    @GetMapping("/{id}")
-    public ResponseEntity<ImageDTO> getImageById(@PathVariable Long id) {
-        Image image = imageRepository.findById(id).orElse(null);
-        if (image == null) {
+    public ResponseEntity<ImageDTO> getImageById(@PathVariable Long id,@RequestBody Image imageDetails){
+        Image updatedImage = imageRepository.findById(id).orElse(null);
+        if (updatedImage == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(convertToDTO(image));
+        updatedImage.setPath(imageDetails.getPath());
+
+        Image savedImage = imageRepository.save(updatedImage);
+
+        return ResponseEntity.ok(convertToDTO(updatedImage));
     }
 
     //Delete

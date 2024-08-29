@@ -8,7 +8,7 @@ import java.util.List;
 public class ImageDTO {
     private long id;
     private String path;
-    private List<ArticleDTO> articlesDTOs;
+    private List<Long> articlesIds;
 
 
     //Getter
@@ -20,8 +20,8 @@ public class ImageDTO {
         return path;
     }
 
-    public List<ArticleDTO> getArticlesDTOs() {
-        return articlesDTOs;
+    public List<Long> getArticlesIds() {
+        return articlesIds;
     }
 
     //Setter
@@ -33,7 +33,7 @@ public class ImageDTO {
         this.path = path;
     }
 
-    public void setArticlesDTOs(List<ArticleDTO> articlesDTOs) {
-        this.articlesDTOs = articlesDTOs;
+    public void setArticlesIds(List<Long> articlesIds) {
+        this.articlesIds = articlesIds;
     }
 }

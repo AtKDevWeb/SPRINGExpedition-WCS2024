@@ -2,6 +2,7 @@ package org.wcs.myBlog.DTO;
 
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class ArticleDTO {
     private long id;
@@ -9,41 +10,52 @@ public class ArticleDTO {
     private String content;
     private LocalDateTime updateAt;
     private String categoryName;
+    private List<String> imagePaths;
 
+    //Getter
     public String getCategoryName() {
         return categoryName;
-    }
-
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
     }
 
     public String getContent() {
         return content;
     }
 
-    public void setContent(String content) {
-        this.content = content;
-    }
-
     public long getId() {
         return id;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public List<String> getImagePaths() {
+        return imagePaths;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public LocalDateTime getUpdateAt() {
         return updateAt;
+    }
+
+    //Setter
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public void setImagePaths(List<String> imagePaths) {
+        this.imagePaths = imagePaths;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public void setUpdateAt(LocalDateTime updateAt) {
