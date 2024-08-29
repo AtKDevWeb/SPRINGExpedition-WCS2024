@@ -14,6 +14,8 @@ public class Author {
     @Column(nullable = false, length = 150)
     private String lastName;
 
+    @OneToMany(mappedBy = "author");
+    private List<ArticleAuthor> articleAuthors;
 
 
     //Getter

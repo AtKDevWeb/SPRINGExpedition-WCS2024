@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import org.springframework.web.servlet.tags.form.TextareaTag;
 
 
+import javax.xml.stream.events.Comment;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -35,6 +36,8 @@ public class Article {
             inverseJoinColumns = @JoinColumn(name = "image_id")
     )
     private List<Image> images;
+
+
 
     //Contructor : optionnal while , the reflexion create this
 

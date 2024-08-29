@@ -42,6 +42,7 @@ public class ArticleController {
         articleDTO.setTitle(article.getTitle());
         articleDTO.setContent(article.getContent());
         articleDTO.setUpdateAt(article.getUpdatedAt());
+
         if (article.getCategory() != null) {
             articleDTO.setCategoryName((article.getCategory().getName()));
         }
