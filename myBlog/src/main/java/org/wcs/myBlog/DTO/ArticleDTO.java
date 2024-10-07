@@ -11,6 +11,7 @@ public class ArticleDTO {
     private LocalDateTime updateAt;
     private String categoryName;
     private List<String> imagePaths;
+    private List<AuthorDTO> authors;
 
     //Getter
     public String getCategoryName() {
@@ -37,6 +38,10 @@ public class ArticleDTO {
         return updateAt;
     }
 
+    public List<AuthorDTO> getAuthors() {
+        return authors;
+    }
+
     //Setter
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
@@ -60,5 +65,9 @@ public class ArticleDTO {
 
     public void setUpdateAt(LocalDateTime updateAt) {
         this.updateAt = updateAt;
+    }
+
+    public void setAuthors(List<AuthorDTO> authors) {
+        this.authors = authors;
     }
 }

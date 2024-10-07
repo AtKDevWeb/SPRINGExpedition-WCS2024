@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.wcs.myBlog.DTO.ArticleDTO;
+import org.wcs.myBlog.DTO.AuthorDTO;
 import org.wcs.myBlog.DTO.ImageDTO;
 import org.wcs.myBlog.models.*;
 import org.wcs.myBlog.repository.*;
@@ -49,9 +50,18 @@ public class ArticleController {
         if (article.getImages() != null) {
             articleDTO.setImagePaths((article.getImages().stream().map(Image::getPath).collect(Collectors.toList())));
         }
-        if(article.getArticleAuthors()!=null) {
-            articleDTO
+        if (article.getArticleAuthors()!=null) {
+            articleDTO.setAuthors( article.getArticleAuthors().stream()
+                    .filter(articleAuthor -> articleAuthor.getAuthor() != null)
+                    .map(articleAuthor -> {
+                        AuthorDTO authorDTO = new AuthorDTO();
+                        authorDTO.setId(articleAuthor.getAuthor().getId());
+                        authorDTO.setFirstName(articleAuthor.getAuthor().getFirstName());
+                        authorDTO.setLastName(articleAuthor.getAuthor().getLastName());
 
+                        return authorDTO;
+                    })
+                    .collect(Collectors.toList()));
         }
         return articleDTO;
     }
@@ -73,18 +83,18 @@ public class ArticleController {
             article.setCategory(category);
         }
     //Verification de l'existence d'une liste d'image et de la completion de celle-ci
-        if (article.getImages() != null && !article.getImages().isEmpty()){
+        if (article.getImages() != null ){
             List<Image> validImages = new ArrayList<>();
             for (Image image : article.getImages()) {
                 //Verification des images existantes
-                if (image.getId() > 0 ){
+                if (image.getId() > 0){
                     Image existingImage = imageRepository.findById((image.getId()).orElse(null));
                     if (existingImage != null) {
                         validImages.add(existingImage);
                     }else{
-                        return ResponseEntity.badRequest().body(null);
+                        return ResponseEntity.badRequest().body(null); // return error if image not found
                     }
-                }else {
+                }else {// created new image
                     Image savedImage = imageRepository.save(image);
                     validImages.add(savedImage);
                 }
@@ -92,11 +102,10 @@ public class ArticleController {
             article.setImages(validImages);
         }
 
-
         //Sauvegarde des Data dans l'objet SavedArticle pour la création de l'enregistrement dans la BDD
         Article savedArticle = articleRepository.save(article);
 
-        //On sauvegarde d'abord l'objet avec de creer la relation definitive sinon on ne peut pas affecter l'article
+        //On sauvegarde d'abord l'objet avant de creer la relation definitive sinon on ne peut pas affecter l'article
         // à sa relation car il n'existe pas
         if(article.getArticleAuthors() !=null){
             for (ArticleAuthor  articleAuthor : article.getArticleAuthors()) {
@@ -238,12 +247,13 @@ public class ArticleController {
             //Si aucunes image est fournie, on nettoie la liste des images associés.
             article.getImages().clear();
         }
-
-        if(articleDetails.getArticleAuthors() !=null){
-            //Suppression des anciennes rlation entre l'ancien auteurs et ses contributions
-            for (ArticleAuthor  oldArticleAuthor : article.getArticleAuthors()) {
+        if(articleDetails.getArticleAuthors() != null) {
+            //Manual Suppress oldAuthors)
+            for (ArticleAuthor oldArticleAuthor : articleDetails.getArticleAuthors()) {
                 articleAuthorRepository.delete(oldArticleAuthor);
             }
+        }
+
             List<ArticleAuthor> updateArticleAuthors = new ArrayList<>();
 
             for (ArticleAuthor  articleAuthorDetails : articleDetails.getArticleAuthors()) {
@@ -259,9 +269,9 @@ public class ArticleController {
                 newArticleAuthor.setContribution(articleAuthorDetails.getContribution());
 
                 updateArticleAuthors.add(newArticleAuthor);
-
-                articleAuthorRepository.save(updateArticleAuthors);
             }
+        for (ArticleAuthor articleAuthor : updateArticleAuthors) {
+            articleAuthorRepository.save(articleAuthor);
         }
 
             Article updatedArticle = articleRepository.save(article);

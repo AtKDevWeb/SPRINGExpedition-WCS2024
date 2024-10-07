@@ -68,9 +68,11 @@ public class ArticleAuthorController {
         if (author == null) {
             return ResponseEntity.noContent().build();
         }
+
+        assert articleAuthor != null : "ArticleAuthor object is null";
         return ResponseEntity.ok(convertToArticleAuthorDTO(articleAuthor));
     }
-    //UnpdateById
+    //UpdateById
     @PutMapping("/{id}")
     public ResponseEntity<ArticleAuthorDTO> updateArticleAuthor(@PathVariable long id, @RequestBody ArticleAuthor articleAuthor) {
        ArticleAuthor updatedArticleAuthor = articleAuthorRepository.findById(id).orElse(null);
@@ -90,6 +92,7 @@ public class ArticleAuthorController {
     if (articleAuthor == null) {
         return ResponseEntity.noContent().build();
     }
+
     articleAuthorRepository.delete(articleAuthor);
     return ResponseEntity.noContent().build();
     }
