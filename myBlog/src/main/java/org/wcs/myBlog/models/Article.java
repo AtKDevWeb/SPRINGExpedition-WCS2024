@@ -3,7 +3,10 @@ package org.wcs.myBlog.models;
 import jakarta.persistence.*;
 import org.springframework.web.servlet.tags.form.TextareaTag;
 
+
+import javax.xml.stream.events.Comment;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 public class Article {
@@ -11,7 +14,7 @@ public class Article {
     @GeneratedValue(strategy = GenerationType.IDENTITY )
     private Long id;
 
-    @Column (nullable = false, length = 50)
+    @Column (nullable = false, length = 100)
     private String title;
 
     @Column (columnDefinition = "TEXT")
@@ -21,6 +24,21 @@ public class Article {
     private LocalDateTime createdAt;
     @Column (nullable = false)
     private LocalDateTime updatedAt;
+
+    @ManyToOne
+    @JoinColumn (name ="category_id")
+    private Category category;
+
+    @ManyToMany
+    @JoinTable(
+            name = "article_image",
+            joinColumns = @JoinColumn(name = "article_id"),
+            inverseJoinColumns = @JoinColumn(name = "image_id")
+    )
+    private List<Image> images;
+
+    @OneToMany(mappedBy="article")
+    private List<ArticleAuthor> articleAuthors;
 
     //Contructor : optionnal while , the reflexion create this
 
@@ -46,6 +64,19 @@ public class Article {
         return updatedAt;
     }
 
+    public Category getCategory() {
+        return category;
+    }
+
+    public List<Image> getImages() {
+        return images;
+    }
+
+    public List<ArticleAuthor> getArticleAuthors() {
+
+        return articleAuthors;
+    }
+
     //Setters
     public void setId(Long id) {
         this.id = id;
@@ -66,4 +97,17 @@ public class Article {
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public void setImages(List<Image> images) {
+        this.images = images;
+    }
+
+    public void setArticleAuthors(List<ArticleAuthor> articleAuthors) {
+        this.articleAuthors = articleAuthors;
+    }
+
 }

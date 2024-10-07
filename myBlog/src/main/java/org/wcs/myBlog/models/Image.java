@@ -5,38 +5,38 @@ import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
-public class Category {
+public class Image {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @Column(nullable = false, length = 50)
-    private String name;
 
-    @OneToMany(mappedBy = "category")
+    @Column(nullable = false, length = 255 )
+    private String path;
+
+    @ManyToMany(mappedBy = "image")
     private List<Article> articles;
 
-    //Constructeur
-
-    //Getter
+    //getter
     public long getId() {
         return id;
     }
 
-    public String getName() {
-        return name;
+    public String getPath() {
+        return path;
     }
 
     public List<Article> getArticles() {
         return articles;
     }
 
-    //Setter
+    //setter
     public void setId(long id) {
         this.id = id;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setPath(String path) {
+        this.path = path;
     }
 
     public void setArticles(List<Article> articles) {
