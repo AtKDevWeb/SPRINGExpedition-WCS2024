@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class ArticleService {
+
     private final ArticleRepository articleRepository;
     private final ArticleMapper articleMapper;
     private final CategoryRepository categoryRepository;
