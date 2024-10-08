@@ -28,7 +28,7 @@ public class ArticleController {
     //Create
     @PostMapping
     public ResponseEntity<ArticleDTO> createArticle(@RequestBody Article article) {
-      ArticleDTO savedArticle = articleService.createArticle(articleDTO);
+      ArticleDTO savedArticle = articleService.createArticle(article);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedArticle);
     }
 
@@ -36,7 +36,7 @@ public class ArticleController {
     @GetMapping
     public ResponseEntity<List<ArticleDTO>> getAllArticle() {
         List<ArticleDTO> articles = articleService.getAllArticles();
-        if (articles.isEmpty()) {
+        if (articles == null || articles.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(articles);

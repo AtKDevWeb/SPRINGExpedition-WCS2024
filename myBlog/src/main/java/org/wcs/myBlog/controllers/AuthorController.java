@@ -4,8 +4,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.wcs.myBlog.DTO.AuthorDTO;
+import org.wcs.myBlog.mappers.AuthorMapper;
 import org.wcs.myBlog.models.Author;
 import org.wcs.myBlog.repositories.AuthorRepository;
+import org.wcs.myBlog.services.AuthorService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,27 +17,21 @@ import java.util.stream.Collectors;
 public class AuthorController {
 
     private final AuthorRepository authorRepository;
+    private final AuthorMapper authorMapper;
+    private final AuthorService authorService;
 
-    public AuthorController(AuthorRepository authorRepository) {
+    public AuthorController(AuthorRepository authorRepository, AuthorMapper authorMapper, AuthorService authorService) {
         this.authorRepository = authorRepository;
-    }
-
-    // Mapper
-    public AuthorDTO convertToAuthorDTO(Author author) {
-        AuthorDTO authorDTO = new AuthorDTO();
-        authorDTO.setId(author.getId());
-        authorDTO.setFirstName(author.getFirstName());
-        authorDTO.setLastName(author.getLastName());
-
-        return authorDTO;
+        this.authorMapper = authorMapper;
+        this.authorService = authorService;
     }
 
     // CRUD
     // Create
     @PostMapping
     public ResponseEntity<AuthorDTO> addAuthor(@RequestBody Author author) {
-        Author savedAuthor = authorRepository.save(author);
-        return ResponseEntity.status(HttpStatus.CREATED).body(convertToAuthorDTO(savedAuthor));
+        AuthorDTO savedAuthor = authorService.addAuthor(author);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedAuthor);
     }
 
     // ReadAll

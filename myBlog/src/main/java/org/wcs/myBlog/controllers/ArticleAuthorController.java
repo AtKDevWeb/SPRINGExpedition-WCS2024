@@ -8,92 +8,69 @@ import org.wcs.myBlog.models.ArticleAuthor;
 import org.wcs.myBlog.repositories.ArticleAuthorRepository;
 import org.wcs.myBlog.repositories.ArticleRepository;
 import org.wcs.myBlog.repositories.AuthorRepository;
+import org.wcs.myBlog.services.ArticleAuthorService;
+import org.wcs.myBlog.services.ArticleService;
 
+import java.util.stream.Collectors;
 import java.util.List;
 
 @RestController
 @RequestMapping("/articleAuthors")
 public class ArticleAuthorController {
 
-    private final ArticleAuthorRepository articleAuthorRepository;
-    private final AuthorRepository authorRepository;
-    private final ArticleRepository articleRepository;
+    private final ArticleAuthorService articleAuthorService;
+    private final ArticleService articleService;
 
-    public ArticleAuthorController(ArticleAuthorRepository articleAuthorRepository, AuthorRepository authorRepository, ArticleRepository articleRepository) {
-        this.articleAuthorRepository = articleAuthorRepository;
-        this.authorRepository = authorRepository;
-        this.articleRepository = articleRepository;
-    }
-
-    //Mapper
-    private ArticleAuthorDTO convertToArticleAuthorDTO (ArticleAuthor articleAuthor) {
-        ArticleAuthorDTO articleAuthorDTO = new ArticleAuthorDTO();
-        articleAuthorDTO.setId(articleAuthor.getId());
-
-        articleAuthorDTO.setArticle(articleAuthor.getArticle());
-        articleAuthorDTO.setAuthor(articleAuthor.getAuthor());
-
-        articleAuthorDTO.setContribution(articleAuthor.getContribution());
-
-        return articleAuthorDTO;
-
+    public ArticleAuthorController (ArticleAuthorService articleAuthorService, ArticleService articleService) {
+        this.articleAuthorService = articleAuthorService;
+        this.articleService = articleService;
     }
 
     //CRUD
     //Create
     @PostMapping
     public ResponseEntity<ArticleAuthorDTO> addArticleAuthor(@RequestBody ArticleAuthor articleAuthor) {
-        ArticleAuthor savedArticleAuthor = articleAuthorRepository.save(articleAuthor);
-        return ResponseEntity.status(HttpStatus.CREATED).body(convertToArticleAuthorDTO(savedArticleAuthor));
+        ArticleAuthorDTO savedArticleAuthor = articleAuthorService.addArticleAuthor(articleAuthor);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedArticleAuthor);
     }
 
     //ReadAll
     @GetMapping
     public ResponseEntity<List<ArticleAuthorDTO>> getAllArticleAuthors() {
-        List<ArticleAuthor> articlesAuthors = articleAuthorRepository.findAll();
-        if (articlesAuthors.isEmpty()) {
+        List<ArticleAuthorDTO> articlesAuthors = articleAuthorService.getAllArticleAuthors();
+        if (articlesAuthors == null ||articlesAuthors.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-        List<ArticleAuthorDTO> articleAuthorsDTOs = articlesAuthors.stream()
-                .map(this::convertToArticleAuthorDTO)
-                .collect(Collectors.toLIst());
-
-        return ResponseEntity.ok(articleAuthorsDTOs);
+            return ResponseEntity.ok(articlesAuthors);
     }
     //ReadOneById
     @GetMapping("/{id}")
     public ResponseEntity<ArticleAuthorDTO> getByArticleAuthor(@PathVariable long id){
-        ArticleAuthor articleAuthor = articleAuthorRepository.findById(id).orElse(null);
+        ArticleAuthorDTO articleAuthor = articleAuthorService.getByArticleAuthor(id);
         if (author == null) {
             return ResponseEntity.noContent().build();
         }
 
         assert articleAuthor != null : "ArticleAuthor object is null";
-        return ResponseEntity.ok(convertToArticleAuthorDTO(articleAuthor));
+        return ResponseEntity.ok(articleAuthor);
     }
     //UpdateById
     @PutMapping("/{id}")
     public ResponseEntity<ArticleAuthorDTO> updateArticleAuthor(@PathVariable long id, @RequestBody ArticleAuthor articleAuthor) {
-       ArticleAuthor updatedArticleAuthor = articleAuthorRepository.findById(id).orElse(null);
+       ArticleAuthorDTO updatedArticleAuthor = articleAuthorService.getByArticleAuthor(id);
         if (updatedArticleAuthor == null) {
             return ResponseEntity.noContent().build();
         }
-        updatedArticleAuthor.setContribution(articleAuthor.getContribution());
-
-        articleAuthorRepository.save(updatedArticleAuthor);
-
-        return ResponseEntity.ok(convertToArticleAuthorDTO(updatedArticleAuthor));
+        return ResponseEntity.ok(updatedArticleAuthor);
     }
     //DeleteById
     @DeleteMapping("/{id}")
-    public ResponseEntity<ArticleAuthor> deleteArticleAuthor(@PathVariable long id) {*
-    ArticleAuthor articleAuthor = articleAuthorRepository.findById(id).orElse(null);
-    if (articleAuthor == null) {
-        return ResponseEntity.noContent().build();
-    }
-
-    articleAuthorRepository.delete(articleAuthor);
-    return ResponseEntity.noContent().build();
+    public ResponseEntity<Void> deleteArticleAuthor(@PathVariable long id) {
+        if (articleAuthorService.deleteArticleAuthor(id)) {
+            return ResponseEntity.noContent().build();
+        }else{
+            return ResponseEntity.notFound().build();
+        }
     }
 
 }

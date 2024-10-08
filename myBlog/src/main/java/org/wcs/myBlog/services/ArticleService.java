@@ -41,6 +41,7 @@ public class ArticleService {
     }
 
     //CRUD
+    //Create
     public ArticleDTO createArticle(Article article) {
         //initialisation des variables de temps
         article.setCreatedAt(LocalDateTime.now());
@@ -66,7 +67,7 @@ public class ArticleService {
                         validImages.add(existingImage);
                     }else{
                         return null;
- // return error if image not found
+                        // return error if image not found
                     }
                 }else {// created new image
                     Image savedImage = imageRepository.save(image);
@@ -229,10 +230,8 @@ public class ArticleService {
         }
 
         Article updatedArticle = articleRepository.save(article);
-       return articleMapper.convertToDTO(updatedArticle);
+        return articleMapper.convertToDTO(updatedArticle);
     }
-
-
 
     //Delete
     public boolean deleteArticle(long id) {
@@ -247,6 +246,7 @@ public class ArticleService {
                 articleAuthorRepository.delete(articleAuthor);
             }
         }
+        articleAuthorRepository.deleteAll(article.getArticleAuthors());
         articleRepository.delete(article);
         return false;
     }
