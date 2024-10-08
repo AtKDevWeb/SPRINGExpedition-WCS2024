@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @Service
 public class AuthorService {
 
-    private AuthorRepository authorRepository;
+    private final AuthorRepository authorRepository;
     private AuthorMapper authorMapper;
 
     public AuthorService(AuthorRepository authorRepository, AuthorMapper authorMapper) {
@@ -25,8 +25,8 @@ public class AuthorService {
     // CRUD
     // Create
     public AuthorDTO addAuthor(@RequestBody Author author) {
-        Author savedAuthor = .save(author);
-        return ResponseEntity.status(HttpStatus.CREATED).body(convertToAuthorDTO(savedAuthor));
+        Author savedAuthor = authorRepository.save(author);
+        return authorMapper.convertToAuthorDTO(savedAuthor);
     }
 
     // ReadAll

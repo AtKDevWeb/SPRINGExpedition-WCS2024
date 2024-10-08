@@ -5,13 +5,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.wcs.myBlog.DTO.ArticleAuthorDTO;
 import org.wcs.myBlog.models.ArticleAuthor;
-import org.wcs.myBlog.repositories.ArticleAuthorRepository;
-import org.wcs.myBlog.repositories.ArticleRepository;
-import org.wcs.myBlog.repositories.AuthorRepository;
+
 import org.wcs.myBlog.services.ArticleAuthorService;
 import org.wcs.myBlog.services.ArticleService;
 
-import java.util.stream.Collectors;
 import java.util.List;
 
 @RestController
@@ -19,11 +16,10 @@ import java.util.List;
 public class ArticleAuthorController {
 
     private final ArticleAuthorService articleAuthorService;
-    private final ArticleService articleService;
+
 
     public ArticleAuthorController (ArticleAuthorService articleAuthorService, ArticleService articleService) {
         this.articleAuthorService = articleAuthorService;
-        this.articleService = articleService;
     }
 
     //CRUD
@@ -56,7 +52,8 @@ public class ArticleAuthorController {
     }
     //UpdateById
     @PutMapping("/{id}")
-    public ResponseEntity<ArticleAuthorDTO> updateArticleAuthor(@PathVariable long id, @RequestBody ArticleAuthor articleAuthor) {
+    public ResponseEntity<ArticleAuthorDTO> updateArticleAuthor(@PathVariable long id,
+                                                                @RequestBody ArticleAuthor articleAuthor) {
        ArticleAuthorDTO updatedArticleAuthor = articleAuthorService.getByArticleAuthor(id);
         if (updatedArticleAuthor == null) {
             return ResponseEntity.noContent().build();
