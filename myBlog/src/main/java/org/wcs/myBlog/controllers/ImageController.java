@@ -3,6 +3,7 @@ package org.wcs.myBlog.controllers;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.wcs.myBlog.DTO.ArticleDTO;
 import org.wcs.myBlog.DTO.ImageDTO;
 import org.wcs.myBlog.mappers.ImageMapper;
 import org.wcs.myBlog.models.Image;
@@ -44,10 +45,12 @@ public class ImageController {
     //ReadAll
     @GetMapping
     public ResponseEntity<List<ImageDTO>> getAllImages() {
-        List<Image> images = imageRepository.findAll();
-        return images.stream()
-                .map(imageMapper::convertImageToDTO)
-                .collect(Collectors.toList());
+        List<ImageDTO> images = imageService.getAllImages();
+
+        if (articles == null || articles.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(images);
     }
 
     //ReadOne
