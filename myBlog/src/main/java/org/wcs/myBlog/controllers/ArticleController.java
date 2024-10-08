@@ -36,36 +36,6 @@ public class ArticleController {
         this.articleAuthorRepository = articleAuthorRepository;
     }
 
-    //Mapper
-    private ArticleDTO convertToDTO(Article article) {
-        ArticleDTO articleDTO = new ArticleDTO();
-
-        articleDTO.setId(article.getId());
-        articleDTO.setTitle(article.getTitle());
-        articleDTO.setContent(article.getContent());
-        articleDTO.setUpdateAt(article.getUpdatedAt());
-
-        if (article.getCategory() != null) {
-            articleDTO.setCategoryName((article.getCategory().getName()));
-        }
-        if (article.getImages() != null) {
-            articleDTO.setImagePaths((article.getImages().stream().map(Image::getPath).collect(Collectors.toList())));
-        }
-        if (article.getArticleAuthors()!=null) {
-            articleDTO.setAuthors( article.getArticleAuthors().stream()
-                    .filter(articleAuthor -> articleAuthor.getAuthor() != null)
-                    .map(articleAuthor -> {
-                        AuthorDTO authorDTO = new AuthorDTO();
-                        authorDTO.setId(articleAuthor.getAuthor().getId());
-                        authorDTO.setFirstName(articleAuthor.getAuthor().getFirstName());
-                        authorDTO.setLastName(articleAuthor.getAuthor().getLastName());
-
-                        return authorDTO;
-                    })
-                    .collect(Collectors.toList()));
-        }
-        return articleDTO;
-    }
 
     //CRUD
     //Create
@@ -132,11 +102,10 @@ public class ArticleController {
     //ReadAll
     @GetMapping
     public ResponseEntity<List<ArticleDTO>> getAllArticle() {
-        List<Article> articles = articleRepository.findAll();
+
         if (articles.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-        List<ArticleDTO> articlesDTOs = articles.stream().map(this::convertToDTO).collect(Collectors.toList());
 
         return ResponseEntity.ok(articlesDTOs);
     }
