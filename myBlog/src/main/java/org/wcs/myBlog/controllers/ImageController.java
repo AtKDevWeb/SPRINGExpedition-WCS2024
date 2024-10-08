@@ -3,11 +3,14 @@ package org.wcs.myBlog.controllers;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.wcs.myBlog.DTO.ArticleDTO;
 import org.wcs.myBlog.DTO.ImageDTO;
+import org.wcs.myBlog.mappers.ImageMapper;
 import org.wcs.myBlog.models.Image;
-import org.wcs.myBlog.models.Article;
-import org.wcs.myBlog.repository.ArticleRepository;
-import org.wcs.myBlog.repository.ImageRepository;
+
+
+import org.wcs.myBlog.repositories.ImageRepository;
+import org.wcs.myBlog.services.ImageService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,50 +20,43 @@ import java.util.stream.Collectors;
 public class ImageController {
 
 
-    private final ArticleRepository articleRepository;
+
     private final ImageRepository imageRepository;
+    private final ImageService imageService;
+    private final ImageMapper imageMapper;
 
-    public ImageController(ImageRepository imageRepository, ArticleRepository articleRepository) {
+    public ImageController(ImageRepository imageRepository,
+                           ImageService imageService, ImageMapper imageMapper) {
         this.imageRepository = imageRepository;
-        this.articleRepository = articleRepository;
+        this.imageService = imageService;
+        this.imageMapper = imageMapper;
     }
 
-    //Mapper
-    private ImageDTO convertToDTO(Image image) {
-        ImageDTO imageDTO = new ImageDTO();
-        imageDTO.setId(image.getId());
-        imageDTO.setPath(image.getPath());
-        if (image.getArticles() != null ) {
-            imageDTO.setArticlesIds(image.getArticles().stream().map(Article::getId).collect(Collectors.toList()));
-        }
-        return imageDTO;
-    }
+
 
     //CRUD
     //Create
     @PostMapping
     public ResponseEntity<ImageDTO> createImage(@RequestBody Image image) {
-        Image savedImage = imageRepository.save(image);
-        return ResponseEntity.status(HttpStatus.CREATED).body(convertToDTO(savedImage));
+        ImageDTO savedImage = imageService.createImage(image);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedImage);
     }
 
     //ReadAll
     @GetMapping
     public ResponseEntity<List<ImageDTO>> getAllImages() {
-        List<Image> images = imageRepository.findAll();
-        if (images.isEmpty()) {
+        List<ImageDTO> images = imageService.getAllImages();
+
+        if (articles == null || articles.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-        List<ImageDTO> imageDTOs = images.stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(imageDTOs);
+        return ResponseEntity.ok(images);
     }
 
     //ReadOne
     @GetMapping("/{id}")
     public ResponseEntity<ImageDTO> getImageById(@PathVariable Long id) {
-        Image image = imageRepository.findById(id).orElse(null);
+        ImageDTO image = imageService.getImageById(id).orElse(null);
         if (image == null) {
             return ResponseEntity.notFound().build();
         }
@@ -69,25 +65,20 @@ public class ImageController {
     //Update
     @PutMapping("/{id}")
     public ResponseEntity<ImageDTO> getImageById(@PathVariable Long id,@RequestBody Image imageDetails){
-        Image updatedImage = imageRepository.findById(id).orElse(null);
+        ImageDTO updatedImage = imageService.updateImageById(id, imageDetails);
         if (updatedImage == null) {
             return ResponseEntity.notFound().build();
         }
-        updatedImage.setPath(imageDetails.getPath());
-
-        Image savedImage = imageRepository.save(updatedImage);
-
-        return ResponseEntity.ok(convertToDTO(updatedImage));
+        return ResponseEntity.ok(updatedImage);
     }
 
     //Delete
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteImage(@PathVariable Long id) {
-        Image image = imageRepository.findById(id).orElse(null);
-        if (image == null) {
+        if (imageService.deleteImage(id)) {
+            return ResponseEntity.noContent().build();
+        }ele {
             return ResponseEntity.notFound().build();
         }
-        imageRepository.delete(image);
-        return ResponseEntity.noContent().build();
     }
 }

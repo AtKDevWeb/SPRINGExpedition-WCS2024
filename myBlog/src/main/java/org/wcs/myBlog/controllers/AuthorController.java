@@ -4,89 +4,71 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.wcs.myBlog.DTO.AuthorDTO;
+import org.wcs.myBlog.mappers.AuthorMapper;
 import org.wcs.myBlog.models.Author;
-import org.wcs.myBlog.repository.AuthorRepository;
+import org.wcs.myBlog.repositories.AuthorRepository;
+import org.wcs.myBlog.services.AuthorService;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/authors")
 public class AuthorController {
 
-    private final AuthorRepository authorRepository;
 
-    public AuthorController(AuthorRepository authorRepository) {
-        this.authorRepository = authorRepository;
-    }
+    private final AuthorService authorService;
 
-    // Mapper
-    public AuthorDTO convertToAuthorDTO(Author author) {
-        AuthorDTO authorDTO = new AuthorDTO();
-        authorDTO.setId(author.getId());
-        authorDTO.setFirstName(author.getFirstName());
-        authorDTO.setLastName(author.getLastName());
-
-        return authorDTO;
+    public AuthorController(AuthorRepository authorRepository, AuthorMapper authorMapper, AuthorService authorService) {
+       this.authorService = authorService;
     }
 
     // CRUD
     // Create
     @PostMapping
     public ResponseEntity<AuthorDTO> addAuthor(@RequestBody Author author) {
-        Author savedAuthor = authorRepository.save(author);
-        return ResponseEntity.status(HttpStatus.CREATED).body(convertToAuthorDTO(savedAuthor));
+        AuthorDTO savedAuthor = authorService.addAuthor(author);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedAuthor);
     }
 
     // ReadAll
     @GetMapping
     public ResponseEntity<List<AuthorDTO>> getAllAuthors() {
-        List<Author> authors = authorRepository.findAll();
+        List<AuthorDTO> authors = authorService.getAllAuthors();
         if (authors.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-        List<AuthorDTO> authorsDTOs = authors.stream()
-                .map(this::convertToAuthorDTO)
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok(authorsDTOs);
+           return ResponseEntity.ok(authors);
 
     }
 
     // ReadOneById
     @GetMapping("/{id}")
     public ResponseEntity<AuthorDTO> getAuthorById(@PathVariable Long id) {
-        Author author = authorRepository.findById(id).orElse(null);
+        AuthorDTO author = authorService.getAuthorById(id).orElse(null);
         if (author == null) {
             return ResponseEntity.notFound().build();
         }
-
-        return ResponseEntity.ok(convertToAuthorDTO(author));
+        return ResponseEntity.ok(author);
 
     }
-    // UpdateOneById
+    // UpdateOneById //here
     @PutMapping("/{id}")
     public ResponseEntity<AuthorDTO> updateAuthor(@PathVariable Long id, @RequestBody Author author) {
-        Author updatedAuthor = authorRepository.findById(id).orElse(null);
+        AuthorDTO updatedAuthor = authorService.getAuthorById(id).orElse(null);
         if (updatedAuthor == null) {
             return ResponseEntity.notFound().build();
         }
-        updatedAuthor.setFirstName(author.getFirstName());
-        updatedAuthor.setLastName(author.getLastName());
-
-        authorRepository.save(updatedAuthor);
-        return ResponseEntity.ok(convertToAuthorDTO(author));
+        return ResponseEntity.ok(updatedAuthor);
     }
 
     // DeleteById
     @DeleteMapping("/{id}")
-    public ResponseEntity<Author> deleteAuthor(@PathVariable Long id) {
-        Author author = authorRepository.findById(id).orElse(null);
-        if (author == null) {
+    public ResponseEntity<Void> deleteAuthor(@PathVariable Long id) {
+        if (authorService.deleteAuthor(id)) {
+            return ResponseEntity.notFound().build();
+        }else {
             return ResponseEntity.notFound().build();
         }
-        authorRepository.delete(author);
-        return ResponseEntity.noContent().build();
     }
 
 }

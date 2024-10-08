@@ -1,4 +1,4 @@
-package org.wcs.myBlog.repository;
+package org.wcs.myBlog.repositories;
 
 import org.wcs.myBlog.models.Article;
 import org.springframework.data.jpa.repository.JpaRepository;
