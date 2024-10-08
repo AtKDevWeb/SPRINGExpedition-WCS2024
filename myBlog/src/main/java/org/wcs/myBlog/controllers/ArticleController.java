@@ -18,11 +18,9 @@ public class ArticleController {
 
     //Declaration du constructeur et injection du repository
     private final ArticleService articleService;
-    private final ArticleMapper articleMapper;
 
     public ArticleController(ArticleService articleService, ArticleMapper articleMapper) {
         this.articleService = articleService;
-        this.articleMapper = articleMapper;
     }
 
 
