@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.*;
 import org.wcs.myBlog.DTO.ImageDTO;
 import org.wcs.myBlog.models.Image;
 import org.wcs.myBlog.models.Article;
-import org.wcs.myBlog.repository.ArticleRepository;
-import org.wcs.myBlog.repository.ImageRepository;
+import org.wcs.myBlog.repositories.ArticleRepository;
+import org.wcs.myBlog.repositories.ImageRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;

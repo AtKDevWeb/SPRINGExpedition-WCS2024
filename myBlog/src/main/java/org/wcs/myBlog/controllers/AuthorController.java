@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.wcs.myBlog.DTO.AuthorDTO;
 import org.wcs.myBlog.models.Author;
-import org.wcs.myBlog.repository.AuthorRepository;
+import org.wcs.myBlog.repositories.AuthorRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;

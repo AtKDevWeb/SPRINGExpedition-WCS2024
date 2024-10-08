@@ -5,11 +5,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.wcs.myBlog.DTO.ArticleDTO;
 import org.wcs.myBlog.DTO.AuthorDTO;
-import org.wcs.myBlog.DTO.ImageDTO;
 import org.wcs.myBlog.models.*;
-import org.wcs.myBlog.repository.*;
+import org.wcs.myBlog.repositories.*;
 
-import java.sql.Array;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +25,10 @@ public class ArticleController {
     private final ArticleAuthorRepository articleAuthorRepository;
 
     public ArticleController(ArticleRepository articleRepository,
-                             CategoryRepository categoryRepository, ImageRepository imageRepository, AuthorRepository authorRepository, ArticleAuthorRepository articleAuthorRepository) {
+                             CategoryRepository categoryRepository,
+                             ImageRepository imageRepository,
+                             AuthorRepository authorRepository,
+                             ArticleAuthorRepository articleAuthorRepository) {
         this.articleRepository = articleRepository;
         this.categoryRepository = categoryRepository;
         this.imageRepository = imageRepository;
@@ -74,7 +75,7 @@ public class ArticleController {
         article.setCreatedAt(LocalDateTime.now());
         article.setUpdatedAt(LocalDateTime.now());
 
-        //Add Category On Creation
+        //Add CategoryMapper On Creation
         if(article.getCategory() !=null) {
             Category category = categoryRepository.findById(article.getCategory().getId()).orElse(null);
             if(category == null) {
@@ -217,7 +218,7 @@ public class ArticleController {
         article.setContent(articleDetails.getContent());
         article.setUpdatedAt(LocalDateTime.now());
 
-        //add Category on Update
+        //add CategoryMapper on Update
         Category category = categoryRepository.findById(articleDetails.getCategory().getId()).orElse(null);
         if (articleDetails.getCategory() == null) {
             return ResponseEntity.notFound().build();

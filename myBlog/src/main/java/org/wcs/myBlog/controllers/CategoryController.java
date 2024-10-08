@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.wcs.myBlog.DTO.ArticleDTO;
 import org.wcs.myBlog.DTO.CategoryDTO;
-import org.wcs.myBlog.repository.CategoryRepository;
+import org.wcs.myBlog.repositories.CategoryRepository;
 import org.wcs.myBlog.models.Category;
 
 import java.util.List;

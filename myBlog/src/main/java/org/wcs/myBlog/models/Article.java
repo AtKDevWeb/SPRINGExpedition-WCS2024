@@ -1,10 +1,8 @@
 package org.wcs.myBlog.models;
 
 import jakarta.persistence.*;
-import org.springframework.web.servlet.tags.form.TextareaTag;
 
 
-import javax.xml.stream.events.Comment;
 import java.time.LocalDateTime;
 import java.util.List;
 
