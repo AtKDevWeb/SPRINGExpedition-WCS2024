@@ -1,10 +1,9 @@
 package org.wcs.myBlog.services;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 import org.wcs.myBlog.DTO.ArticleDTO;
+import org.wcs.myBlog.exceptions.RessourceNotFoundException;
 import org.wcs.myBlog.mappers.ArticleMapper;
 import org.wcs.myBlog.models.*;
 import org.wcs.myBlog.repositories.*;
@@ -50,8 +49,9 @@ public class ArticleService {
 
         //Add CategoryMapper On Creation
         if(article.getCategory() !=null) {
-            Category category = categoryRepository.findById(article.getCategory().getId()).orElse(null);
-            if(category == null) {
+            Category category = categoryRepository.findById(article.getCategory().getId()).orElseThrow(()->
+                    new RessourceNotFoundException("La catégorie avec l'ID"+ article.getCategory().getId() +"liée à l'article n'a pas été trouvé"));
+           S if(category == null) {
                 return null;
 
             }
@@ -62,8 +62,10 @@ public class ArticleService {
             List<Image> validImages = new ArrayList<>();
             for (Image image : article.getImages()) {
                 //Verification des images existantes
-                if (image.getId() > 0){
-                    Image existingImage = imageRepository.findById((image.getId()).orElse(null));
+                if (image.getId() > 0){Image existingImage = imageRepository
+                                                            .findById((image.getId()).orElseThrow(()->
+                                                                    new RessourceNotFoundException("L'image avec l'ID"+ image.getId() + "n'a pas été trouvé"));
+
                     if (existingImage != null) {
                         validImages.add(existingImage);
                     }else{
@@ -86,7 +88,9 @@ public class ArticleService {
         if(article.getArticleAuthors() !=null){
             for (ArticleAuthor  articleAuthor : article.getArticleAuthors()) {
                 Author author = articleAuthor.getAuthor();
-                author = authorRepository.findById(author.getId()).orElse(null);
+                author = authorRepository.findById(author.getId()).orElseThrow(()->
+                        new RessourceNotFoundException("L'auteur avec l'ID"+ author.getId() + "n'a pas été trouvé"));
+
                 if(author == null) {
                     return null;
 
@@ -111,10 +115,8 @@ public class ArticleService {
 
     //ReadOne
     public ArticleDTO getArticleById(Long id) {
-        Article article = articleRepository.findById(id).orElse(null);
-        if (article == null) {
-            return null;
-        }
+        Article article = articleRepository.findById(id).orElseThrow(()->
+                new RessourceNotFoundException("L'article avec l'ID"+ id + "n'a pas été trouvé"));
         return articleMapper.convertToDTO(article);
     }
 
@@ -162,8 +164,9 @@ public class ArticleService {
     }
 
     //UpdateOne
-    public ArticleDTO updateArticle( long id,Article articleDetails) {
-        Article article = articleRepository.findById(id).orElse(null);
+    public ArticleDTO updateArticle( long id, Article articleDetails) {
+        Article article = articleRepository.findById(id).orElseThrow(()->
+                new RessourceNotFoundException("L'article avec l'ID"+ id + "n'a pas été trouvé"));
         if (article == null) {
             return null;
         }
@@ -172,7 +175,8 @@ public class ArticleService {
         article.setUpdatedAt(LocalDateTime.now());
 
         //add CategoryMapper on Update
-        Category category = categoryRepository.findById(articleDetails.getCategory().getId()).orElse(null);
+        Category category = categoryRepository.findById(articleDetails.getCategory().getId()).orElseThrow(()->
+                new RessourceNotFoundException("La catégorie avec l'ID"+ id + "n'a pas été trouvée"));
         if (articleDetails.getCategory() == null) {
             return null;
         }
@@ -184,7 +188,8 @@ public class ArticleService {
             for (Image image : articleDetails.getImages()) {
                 //Verification des images existantes
                 if (image.getId() > 0){
-                    Image existingImage = imageRepository.findById((image.getId()).orElse(null));
+                    Image existingImage = imageRepository.findById((image.getId())..orElseThrow(()->
+                            new RessourceNotFoundException("L'image avec l'ID"+ image.getId() + "lié à l'article id"+ id +"n'a pas été trouvée"));
                     if (existingImage != null) {
                         validImages.add(existingImage);
                     }else{
