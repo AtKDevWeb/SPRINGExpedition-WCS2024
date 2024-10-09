@@ -1,9 +1,7 @@
 package org.wcs.myBlog.services;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 import org.wcs.myBlog.DTO.ImageDTO;
+import org.wcs.myBlog.exceptions.RessourceNotFoundException;
 import org.wcs.myBlog.mappers.ImageMapper;
 import org.wcs.myBlog.models.Image;
 import org.wcs.myBlog.repositories.ImageRepository;
@@ -26,7 +24,7 @@ public class ImageService {
 
     public ImageDTO createImage( Image image) {
         Image savedImage = imageRepository.save(image);
-        return imageMapper.convertToDTO(savedImage);
+        return imageMapper.convertImageToDTO(savedImage);
     }
 
     //ReadAll
@@ -37,14 +35,16 @@ public class ImageService {
             return null;
         }
         return images.stream()
-                .map(imageMapper::convertToDTO)
+                .map(imageMapper::convertImageToDTO)
                 .collect(Collectors.toList());
     }
 
     //ReadOne
 
     public ImageDTO getImageById( Long id) {
-        Image image = imageRepository.findById(id).orElse(null);
+        Image image = imageRepository.findById(id)
+                .orElseThrow(()->
+                        new RessourceNotFoundException("L'image avec l'ID"+ id  +"n'a pas été trouvé"));
         if (image == null) {
             return null;
         }
@@ -53,7 +53,9 @@ public class ImageService {
     //Update
 
     public ImageDTO updateImageById(Long id, Image imageDetails){
-        Image updatedImage = imageRepository.findById(id).orElse(null);
+        Image updatedImage = imageRepository.findById(id)
+                .orElseThrow(()->
+                        new RessourceNotFoundException("L'image avec l'ID"+ id  +"n'a pas été trouvé"));
         if (updatedImage == null) {
             return null;
 
@@ -68,7 +70,8 @@ public class ImageService {
     //Delete
 
     public boolean deleteImage( Long id) {
-        Image image = imageRepository.findById(id).orElse(null);
+        Image image = imageRepository.findById(id).orElseThrow(()->
+                new RessourceNotFoundException("L'image avec l'ID"+ id  +"n'a pas été trouvé"));;
         if (image == null) {
             return false;
         }
