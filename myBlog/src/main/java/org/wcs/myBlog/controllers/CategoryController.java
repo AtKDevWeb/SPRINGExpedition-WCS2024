@@ -51,7 +51,7 @@ public class CategoryController {
     @PutMapping("/{id}")
     public ResponseEntity<CategoryDTO> updateCategory(@PathVariable long id, @RequestBody Category categoryDetails) {
         CategoryDTO savedCategory = categoryService.updateCategory(id, categoryDetails);
-        if (category == null) {
+        if (savedCategory == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(savedCategory);

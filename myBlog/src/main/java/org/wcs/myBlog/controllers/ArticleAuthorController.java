@@ -43,11 +43,9 @@ public class ArticleAuthorController {
     @GetMapping("/{id}")
     public ResponseEntity<ArticleAuthorDTO> getByArticleAuthor(@PathVariable long id){
         ArticleAuthorDTO articleAuthor = articleAuthorService.getByArticleAuthor(id);
-        if (author == null) {
+        if (articleAuthor == null) {
             return ResponseEntity.noContent().build();
         }
-
-        assert articleAuthor != null : "ArticleAuthor object is null";
         return ResponseEntity.ok(articleAuthor);
     }
     //UpdateById

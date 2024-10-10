@@ -44,7 +44,7 @@ public class AuthorController {
     // ReadOneById
     @GetMapping("/{id}")
     public ResponseEntity<AuthorDTO> getAuthorById(@PathVariable Long id) {
-        AuthorDTO author = authorService.getAuthorById(id).orElse(null);
+        AuthorDTO author = authorService.getAuthorById(id);
         if (author == null) {
             return ResponseEntity.notFound().build();
         }
@@ -54,7 +54,7 @@ public class AuthorController {
     // UpdateOneById //here
     @PutMapping("/{id}")
     public ResponseEntity<AuthorDTO> updateAuthor(@PathVariable Long id, @RequestBody Author author) {
-        AuthorDTO updatedAuthor = authorService.getAuthorById(id).orElse(null);
+        AuthorDTO updatedAuthor = authorService.getAuthorById(id);
         if (updatedAuthor == null) {
             return ResponseEntity.notFound().build();
         }

@@ -42,13 +42,12 @@ public class ArticleAuthorService {
 
     //ReadOneById
     public ArticleAuthorDTO getByArticleAuthor(long id){
-        ArticleAuthor articleAuthor = articleAuthorRepository.findById(id)..orElseThrow(()->
+        ArticleAuthor articleAuthor = articleAuthorRepository.findById(id).orElseThrow(()->
                 new RessourceNotFoundException("La relation Auteur/Article avec l'ID"+ id + "n'a pas été trouvée"));;
-        if (author == null) {
+        if (articleAuthor == null) {
             return null;
 
         }
-        assert articleAuthor != null : "ArticleAuthor object is null";
         return articleAuthorMapper.convertToArticleAuthorDTO(articleAuthor);
     }
 
@@ -83,4 +82,3 @@ public class ArticleAuthorService {
 }
 
 
-}

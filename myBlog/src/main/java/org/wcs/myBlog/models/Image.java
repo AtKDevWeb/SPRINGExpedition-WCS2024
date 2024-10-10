@@ -14,7 +14,7 @@ public class Image {
     @Column(nullable = false, length = 255 )
     private String path;
 
-    @ManyToMany(mappedBy = "image")
+    @ManyToMany(mappedBy = "images")
     private List<Article> articles;
 
     //getter

@@ -50,7 +50,7 @@ public class ImageService {
         if (image == null) {
             return null;
         }
-        return imageMapper.convertToDTO(image);
+        return imageMapper.convertImageToDTO(image);
     }
     //Update
 
@@ -66,7 +66,7 @@ public class ImageService {
 
         Image savedImage = imageRepository.save(updatedImage);
 
-        return imageMapper.convertToDTO(savedImage);
+        return imageMapper.convertImageToDTO(savedImage);
     }
 
     //Delete
