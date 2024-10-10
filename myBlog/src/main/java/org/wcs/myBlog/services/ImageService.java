@@ -1,5 +1,6 @@
 package org.wcs.myBlog.services;
 
+import org.springframework.stereotype.Service;
 import org.wcs.myBlog.DTO.ImageDTO;
 import org.wcs.myBlog.exceptions.RessourceNotFoundException;
 import org.wcs.myBlog.mappers.ImageMapper;
@@ -9,6 +10,7 @@ import org.wcs.myBlog.repositories.ImageRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Service
 public class ImageService {
 
     private final ImageRepository imageRepository;
