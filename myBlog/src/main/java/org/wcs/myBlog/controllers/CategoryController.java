@@ -40,7 +40,7 @@ public class CategoryController {
     //ReadById
     @GetMapping("/{id}")
     public ResponseEntity<CategoryDTO> getCategoryById(@PathVariable long id) {
-        CategoryDTO category = categoryService.getCategoryById(id).orElse(null);
+        CategoryDTO category = categoryService.getCategoryById(id);
         if (category == null) {
             return ResponseEntity.notFound().build();
         }
@@ -50,8 +50,8 @@ public class CategoryController {
     //Update
     @PutMapping("/{id}")
     public ResponseEntity<CategoryDTO> updateCategory(@PathVariable long id, @RequestBody Category categoryDetails) {
-        CategoryDTO savedCategory = categoryService.getCategoryById(id).orElse(null);
-        if (category == null) {
+        CategoryDTO savedCategory = categoryService.updateCategory(id, categoryDetails);
+        if (savedCategory == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(savedCategory);
@@ -60,13 +60,11 @@ public class CategoryController {
 
     //Delete
     @DeleteMapping("/{id}")
-    public ResponseEntity<Category> deleteCategory(@PathVariable long id) {
-        Category category = categoryRepository.findById(id).orElse(null);
-        if (category == null) {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<Void> deleteCategory(@PathVariable long id) {
+        if (categoryService.deleteCategory(id)) {
+            return ResponseEntity.noContent().build();
         }
-        categoryRepository.delete(category);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.notFound().build();
     }
     
 }

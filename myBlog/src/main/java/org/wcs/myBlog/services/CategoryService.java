@@ -1,10 +1,8 @@
 package org.wcs.myBlog.services;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.*;
 import org.wcs.myBlog.DTO.CategoryDTO;
+import org.wcs.myBlog.exceptions.RessourceNotFoundException;
 import org.wcs.myBlog.mappers.CategoryMapper;
 import org.wcs.myBlog.models.Category;
 import org.wcs.myBlog.repositories.CategoryRepository;
@@ -37,7 +35,8 @@ public class CategoryService {
     }
     //ReadById
     public CategoryDTO getCategoryById( long id) {
-        Category category = categoryRepository.findById(id).orElse(null);
+        Category category = categoryRepository.findById(id).orElseThrow(()->
+                new RessourceNotFoundException("La Catégorie avec l'ID"+ id  +"n'a pas été trouvé"));;
         if (category == null) {
             return null;
         }
@@ -46,7 +45,8 @@ public class CategoryService {
 
     //Update
     public CategoryDTO updateCategory( long id, Category categoryDetails) {
-        Category category = categoryRepository.findById(id).orElse(null);
+        Category category = categoryRepository.findById(id).orElseThrow(()->
+                new RessourceNotFoundException("La Catégorie avec l'ID"+ id  +"n'a pas été trouvé"));;
         if (category == null) {
             return null;
         }
@@ -58,7 +58,8 @@ public class CategoryService {
 
     //Delete
     public boolean deleteCategory(long id) {
-        Category category = categoryRepository.findById(id).orElse(null);
+        Category category = categoryRepository.findById(id).orElseThrow(()->
+                new RessourceNotFoundException("La Catégorie avec l'ID"+ id  +"n'a pas été trouvé"));;
         if (category == null) {
             return false;
         }

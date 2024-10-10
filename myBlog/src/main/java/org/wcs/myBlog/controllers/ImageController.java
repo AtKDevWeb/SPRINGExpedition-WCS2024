@@ -3,36 +3,23 @@ package org.wcs.myBlog.controllers;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.wcs.myBlog.DTO.ArticleDTO;
 import org.wcs.myBlog.DTO.ImageDTO;
-import org.wcs.myBlog.mappers.ImageMapper;
 import org.wcs.myBlog.models.Image;
 
-
-import org.wcs.myBlog.repositories.ImageRepository;
 import org.wcs.myBlog.services.ImageService;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 @RestController
 @RequestMapping("/images")
 public class ImageController {
 
-
-
-    private final ImageRepository imageRepository;
     private final ImageService imageService;
-    private final ImageMapper imageMapper;
 
-    public ImageController(ImageRepository imageRepository,
-                           ImageService imageService, ImageMapper imageMapper) {
-        this.imageRepository = imageRepository;
+    public ImageController(ImageService imageService) {
         this.imageService = imageService;
-        this.imageMapper = imageMapper;
     }
-
-
 
     //CRUD
     //Create
@@ -46,8 +33,7 @@ public class ImageController {
     @GetMapping
     public ResponseEntity<List<ImageDTO>> getAllImages() {
         List<ImageDTO> images = imageService.getAllImages();
-
-        if (articles == null || articles.isEmpty()) {
+        if (images == null || images.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(images);
@@ -56,11 +42,11 @@ public class ImageController {
     //ReadOne
     @GetMapping("/{id}")
     public ResponseEntity<ImageDTO> getImageById(@PathVariable Long id) {
-        ImageDTO image = imageService.getImageById(id).orElse(null);
+        ImageDTO image = imageService.getImageById(id);
         if (image == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(convertToDTO(image));
+        return ResponseEntity.ok(image);
     }
     //Update
     @PutMapping("/{id}")
@@ -77,7 +63,7 @@ public class ImageController {
     public ResponseEntity<Void> deleteImage(@PathVariable Long id) {
         if (imageService.deleteImage(id)) {
             return ResponseEntity.noContent().build();
-        }ele {
+        }else{
             return ResponseEntity.notFound().build();
         }
     }
