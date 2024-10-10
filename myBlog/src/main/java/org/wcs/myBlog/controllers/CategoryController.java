@@ -40,7 +40,7 @@ public class CategoryController {
     //ReadById
     @GetMapping("/{id}")
     public ResponseEntity<CategoryDTO> getCategoryById(@PathVariable long id) {
-        CategoryDTO category = categoryService.getCategoryById(id).orElse(null);
+        CategoryDTO category = categoryService.getCategoryById(id);
         if (category == null) {
             return ResponseEntity.notFound().build();
         }

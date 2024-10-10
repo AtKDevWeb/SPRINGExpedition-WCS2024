@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 import org.wcs.myBlog.DTO.AuthorDTO;
+import org.wcs.myBlog.exceptions.RessourceNotFoundException;
 import org.wcs.myBlog.mappers.AuthorMapper;
 import org.wcs.myBlog.models.Author;
 import org.wcs.myBlog.repositories.AuthorRepository;
@@ -34,25 +35,24 @@ public class AuthorService {
         List<Author> authors = authorRepository.findAll();
         if (authors.isEmpty()) {
             return null;
-
         }
         return authors.stream().map(authorMapper::convertToAuthorDTO).collect(Collectors.toList());
     }
 
     // ReadOneById
     public AuthorDTO getAuthorById(Long id) {
-        Author author = authorRepository.findById(id).orElse(null);
+        Author author = authorRepository.findById(id).orElseThrow(()->
+                new RessourceNotFoundException("L'auteur avec l'ID"+ id + "n'a pas été trouvée"));
         if (author == null) {
             return null;
-
         }
-
         return authorMapper.convertToAuthorDTO(author);
 
     }
     // UpdateOneById
     public AuthorDTO updateAuthor( Long id, Author author) {
-        Author updatedAuthor = authorRepository.findById(id).orElse(null);
+        Author updatedAuthor = authorRepository.findById(id).orElseThrow(()->
+                new RessourceNotFoundException("L'auteur avec l'ID"+ id + "n'a pas été trouvée"));
         if (updatedAuthor == null) {
             return null;
         }
@@ -65,12 +65,12 @@ public class AuthorService {
 
     // DeleteById
     public boolean deleteAuthor(Long id) {
-        Author author = authorRepository.findById(id).orElse(null);
+        Author author = authorRepository.findById(id).orElseThrow(()->
+                new RessourceNotFoundException("L'auteur avec l'ID"+ id + "n'a pas été trouvée"));
         if (author == null) {
             return false;
         }
         authorRepository.delete(author);
         return false;
-
     }
 }
