@@ -1,6 +1,6 @@
 package org.wcs.myBlog.exceptions;
 
-public class RessourceNotFoundException extends RuntimeException{
+public class gitRessourceNotFoundException extends RuntimeException{
     public RessourceNotFoundException(String message){
         super(message);
     }
